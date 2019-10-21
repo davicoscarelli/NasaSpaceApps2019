@@ -1,0 +1,934 @@
+
+import sys
+import pygame
+from pygame.locals import *
+
+FPS = 30
+WINDOWWIDTH = 840
+WINDOWHEIGHT = 540
+
+WHITE       = (255, 255, 255)
+BLACK       = (  0,   0,   0)
+RED         = (255,   0,   0)
+GREEN       = (  0, 255,   0)
+DARKGREEN   = (  0, 155,   0)
+DARKGRAY    = ( 40,  40,  40)
+BGCOLOR = BLACK
+
+
+earth = 0
+direction = 0
+
+location1_selected = False
+location2_selected = False
+location3_selected = False
+location4_selected = False
+location5_selected = False
+location6_selected = False
+location7_selected = False
+location8_selected = False
+location9_selected = False
+location10_selected = False
+
+ck = 0
+ 
+i = 0
+
+m = 0
+
+mission_flag = False
+
+def main():
+    global FPSCLOCK, DISPLAYSURF, BASICFONT, WINDOWWIDTH, WINDOWHEIGHT
+    
+    pygame.init()
+    FPSCLOCK = pygame.time.Clock()
+    DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
+    pygame.display.set_caption('Final Game')
+       
+    #showStartScreen()
+    
+    while True:
+        computer()
+        satellite()
+        mission()
+
+def satellite():
+    global location1_selected
+    global location2_selected
+    global location3_selected
+    global location4_selected
+    global location5_selected
+    global location6_selected
+    global location7_selected
+    global location8_selected
+    global location9_selected
+    global  earth
+    global ck
+    global m
+    # pygame.mixer.music.load('soundtrack.wav')
+    # pygame.mixer.music.play(-1)
+    
+    while True:                  
+            locations = ["p","d","f","p","d","f"]
+            local = "assets/location.png"                
+            
+            rotate1 = "assets/rotate1.png"
+            rotate2 = "assets/rotate2.png"
+
+            computer_icon = "assets/computer_icon.png"
+            
+            
+            rotate1_pos_x = (WINDOWWIDTH / 2) - 100
+            rotate1_pos_y = WINDOWHEIGHT - 60
+
+            rotate2_pos_x = (WINDOWWIDTH / 2) + 40
+            rotate2_pos_y = WINDOWHEIGHT - 60
+        
+            rotate_size_x = 40
+            rotate_size_y = 40 
+
+            location_size_x = 60
+            location_size_y = 60
+            
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    terminate()                          
+                elif event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        terminate()    
+                        
+            if m == 0:
+                if earth == 0:
+                    
+                    mouse = pygame.mouse.get_pos()
+                    click = pygame.mouse.get_pressed()
+                    
+                    location1_pos_x = 425 - location_size_x
+                    location1_pos_y = 70 - location_size_y
+                    
+                    location2_pos_x = 560 - location_size_x
+                    location2_pos_y = 356 - location_size_y
+                    
+                    location3_pos_x = 410 - location_size_x
+                    location3_pos_y = 307 - location_size_y             
+                    
+                    
+                    DISPLAYSURF.blit(pygame.image.load("assets/earth1.png"), (0,0))  
+
+                    if location1_pos_x < mouse[0] <  location1_pos_x + location_size_x and location1_pos_y < mouse[1] < location1_pos_y + location_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                location1_selected = True
+                                location(locations[(m*3)])
+                                print("Location 1")
+                                ck = 0
+                                return
+                    
+                    elif location2_pos_x < mouse[0] <  location2_pos_x + location_size_x and location2_pos_y < mouse[1] < location2_pos_y + location_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                location2_selected = True
+                                location(locations[(m*3)+1])
+                                print("Location 2")
+                                ck = 0
+                                return
+
+                    elif location3_pos_x < mouse[0] <  location3_pos_x + location_size_x and location3_pos_y < mouse[1] < location3_pos_y + location_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                location3_selected = True
+                                location(locations[(m*3)+2])
+                                print("Location 3")
+                                ck = 0
+                                return
+                    
+                    elif rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                earth = 2
+                                ck = 0
+
+                    elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                        if click[0] == 1: 
+                            ck += 1
+                            if ck > 1:
+                                earth = 1 
+                                ck = 0 
+
+                    DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(local), (location_size_x, location_size_y)), (location1_pos_x, location1_pos_y))
+                    DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(local), (location_size_x, location_size_y)), (location2_pos_x, location2_pos_y))
+                    DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(local), (location_size_x, location_size_y)), (location3_pos_x, location3_pos_y))
+            
+                elif earth == 1: 
+                    mouse = pygame.mouse.get_pos()
+                    click = pygame.mouse.get_pressed()
+                    
+
+                    DISPLAYSURF.blit(pygame.image.load("assets/earth2.png"), (0,0))  
+
+                    
+                    if rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                earth = 0
+                                ck = 0
+                    elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                        if click[0] == 1: 
+                            ck += 1
+                            if ck > 1:
+                                earth = 2  
+                                ck = 0   
+                
+                    
+                    
+                elif earth == 2:                        
+                                
+                    mouse = pygame.mouse.get_pos()
+                    click = pygame.mouse.get_pressed()
+                    
+                    
+                    DISPLAYSURF.blit(pygame.image.load("assets/earth3.png"), (0,0))  
+
+                    if rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                earth = 1
+                                ck = 0
+
+                    elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                        if click[0] == 1: 
+                            ck += 1
+                            if ck > 1:
+                                earth = 0  
+                                ck = 0   
+            elif m == 1:
+                if earth == 0:
+                    
+                    mouse = pygame.mouse.get_pos()
+                    click = pygame.mouse.get_pressed()
+                    
+                    location1_pos_x = 425 - location_size_x
+                    location1_pos_y = 70 - location_size_y
+                    
+                    location2_pos_x = 560 - location_size_x
+                    location2_pos_y = 356 - location_size_y
+                    
+                    location3_pos_x = 410 - location_size_x
+                    location3_pos_y = 307 - location_size_y             
+                    
+                    
+                    DISPLAYSURF.blit(pygame.image.load("assets/earth1.png"), (0,0))  
+
+                    if location1_pos_x < mouse[0] <  location1_pos_x + location_size_x and location1_pos_y < mouse[1] < location1_pos_y + location_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                location1_selected = True
+                                location(locations[(m*3)])
+                                print("Location 1")
+                                ck = 0
+                                return
+                    
+                    elif location2_pos_x < mouse[0] <  location2_pos_x + location_size_x and location2_pos_y < mouse[1] < location2_pos_y + location_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                location2_selected = True
+                                location(locations[(m*3)+1])
+                                print("Location 2")
+                                ck = 0
+                                return
+
+                    elif location3_pos_x < mouse[0] <  location3_pos_x + location_size_x and location3_pos_y < mouse[1] < location3_pos_y + location_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                location3_selected = True
+                                location(locations[(m*3)+2])
+                                print("Location 3")
+                                ck = 0
+                                return
+                    
+                    elif rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                earth = 2
+                                ck = 0
+
+                    elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                        if click[0] == 1: 
+                            ck += 1
+                            if ck > 1:
+                                earth = 1 
+                                ck = 0 
+
+                    DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(local), (location_size_x, location_size_y)), (location1_pos_x, location1_pos_y))
+                    DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(local), (location_size_x, location_size_y)), (location2_pos_x, location2_pos_y))
+                    DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(local), (location_size_x, location_size_y)), (location3_pos_x, location3_pos_y))
+            
+                elif earth == 1: 
+                    mouse = pygame.mouse.get_pos()
+                    click = pygame.mouse.get_pressed()
+                    
+
+                    DISPLAYSURF.blit(pygame.image.load("assets/earth2.png"), (0,0))  
+
+                    
+                    if rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                earth = 0
+                                ck = 0
+                    elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                        if click[0] == 1: 
+                            ck += 1
+                            if ck > 1:
+                                earth = 2  
+                                ck = 0   
+                
+                    
+                    
+                elif earth == 2:                        
+                                
+                    mouse = pygame.mouse.get_pos()
+                    click = pygame.mouse.get_pressed()
+                    
+                    
+                    DISPLAYSURF.blit(pygame.image.load("assets/earth3.png"), (0,0))  
+
+                    if rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                earth = 1
+                                ck = 0
+
+                    elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                        if click[0] == 1: 
+                            ck += 1
+                            if ck > 1:
+                                earth = 0  
+                                ck = 0
+
+            elif m == 2:
+                if earth == 0:
+                    
+                    mouse = pygame.mouse.get_pos()
+                    click = pygame.mouse.get_pressed()
+                    
+                    location1_pos_x = 425 - location_size_x
+                    location1_pos_y = 70 - location_size_y
+                    
+                    location2_pos_x = 560 - location_size_x
+                    location2_pos_y = 356 - location_size_y
+                    
+                    location3_pos_x = 410 - location_size_x
+                    location3_pos_y = 307 - location_size_y             
+                    
+                    
+                    DISPLAYSURF.blit(pygame.image.load("assets/earth1.png"), (0,0))  
+
+                    if location1_pos_x < mouse[0] <  location1_pos_x + location_size_x and location1_pos_y < mouse[1] < location1_pos_y + location_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                location1_selected = True
+                                location(locations[(m*3)])
+                                print("Location 1")
+                                ck = 0
+                                return
+                    
+                    elif location2_pos_x < mouse[0] <  location2_pos_x + location_size_x and location2_pos_y < mouse[1] < location2_pos_y + location_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                location2_selected = True
+                                location(locations[(m*3)+1])
+                                print("Location 2")
+                                ck = 0
+                                return
+
+                    elif location3_pos_x < mouse[0] <  location3_pos_x + location_size_x and location3_pos_y < mouse[1] < location3_pos_y + location_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                location3_selected = True
+                                location(locations[(m*3)+2])
+                                print("Location 3")
+                                ck = 0
+                                return
+                    
+                    elif rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                earth = 2
+                                ck = 0
+
+                    elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                        if click[0] == 1: 
+                            ck += 1
+                            if ck > 1:
+                                earth = 1 
+                                ck = 0 
+
+                    
+                    
+                    DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(local), (location_size_x, location_size_y)), (location1_pos_x, location1_pos_y))
+                    DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(local), (location_size_x, location_size_y)), (location2_pos_x, location2_pos_y))
+                    DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(local), (location_size_x, location_size_y)), (location3_pos_x, location3_pos_y))
+                    
+                elif earth == 1: 
+                    mouse = pygame.mouse.get_pos()
+                    click = pygame.mouse.get_pressed()
+                    
+
+                    DISPLAYSURF.blit(pygame.image.load("assets/earth2.png"), (0,0))  
+
+                    
+                    if rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                earth = 0
+                                ck = 0
+                    elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                        if click[0] == 1: 
+                            ck += 1
+                            if ck > 1:
+                                earth = 2  
+                                ck = 0   
+
+                    
+                    
+                    
+                elif earth == 2:                        
+                                
+                    mouse = pygame.mouse.get_pos()
+                    click = pygame.mouse.get_pressed()
+                    
+                    
+                    DISPLAYSURF.blit(pygame.image.load("assets/earth3.png"), (0,0))  
+
+                    if rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                earth = 1
+                                ck = 0
+
+                    elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                        if click[0] == 1: 
+                            ck += 1
+                            if ck > 1:
+                                earth = 0  
+                                ck = 0
+                    
+
+            
+            if 0 < mouse[0] <  40 and WINDOWHEIGHT-50 < mouse[1] < WINDOWHEIGHT-10:
+                        if click[0] == 1:
+                            ck += 1
+                            if ck > 1:
+                                mission()
+                                ck = 0
+            
+            
+            DISPLAYSURF.blit(pygame.image.load(computer_icon), (10,WINDOWHEIGHT-50)) 
+
+            DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(rotate1), (rotate_size_x, rotate_size_y)), (rotate1_pos_x, rotate1_pos_y))  
+            DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(rotate2), (rotate_size_x, rotate_size_y)), (rotate2_pos_x, rotate2_pos_y))  
+            
+            
+            
+
+
+            
+            pygame.display.update()
+            FPSCLOCK.tick(FPS)
+
+def computer(): 
+    global ck, i, m
+    back = pygame.image.load("assets/computer.png")
+    start = pygame.image.load("assets/startc.png")
+    DISPLAYSURF.blit(back, (0,0))
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                        terminate() 
+                elif (event.key == K_RETURN):
+                    if i < 4:
+                        i += 1
+                    else:
+                        return                        
+                    
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+
+        start_pos_x = 580
+        start_pos_y = 315
+        
+        start_size_x = 200
+        start_size_y = 65
+        
+        missions = [["Here is your first mission: ", "We have this information from 2019 regarding the elevation and", "vegetal life of somewhere on earth.","You have to find out where this place is:", "***Trees, Closely Spaced, Evergreen - Needle Leaved***"],[""],["",""]]
+
+        if m >= len(missions):
+            print("you win")
+            return
+        
+        line = missions[m][i]
+        
+        subtitleFont = pygame.font.Font('freesansbold.ttf', 20)
+        
+        subtitle = subtitleFont.render(line, True, WHITE)
+        subtitleRect = subtitle.get_rect()
+        subtitleRect.topleft = (85, 20 + ((i+1)*25))
+        DISPLAYSURF.blit(subtitle, subtitleRect)        
+        
+        if i > 3:
+            DISPLAYSURF.blit(start, (start_pos_x,start_pos_y))
+            if start_pos_x < mouse[0] <  start_pos_x + start_size_x and start_pos_y < mouse[1] < start_pos_y + start_size_y:
+                    if click[0] == 1:
+                        ck += 1
+                        if ck > 1:
+                            i = 0
+                            ck = 0
+                            return m
+        
+        
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+
+def mission():
+    global m, ck
+    back = pygame.image.load("assets/computer.png")
+    answer = pygame.image.load("assets/answer.png")
+    answerb = pygame.image.load("assets/answerb.png")
+    
+    DISPLAYSURF.blit(back, (0,0))
+    
+    answerA_pos_x = 91
+    answerA_pos_y = 68
+
+    answerB_pos_x = 210
+    answerB_pos_y = 68
+
+    answerC_pos_x = 310
+    answerC_pos_y = 68
+    
+    answer_size_x = 15
+    answer_size_y = 15
+
+    
+
+    if m == 0:        
+        subtitleFont = pygame.font.Font('freesansbold.ttf', 20)
+        
+        subtitle = subtitleFont.render("Where is this place?", True, WHITE)
+        subtitleRect = subtitle.get_rect()
+        subtitleRect.topleft = (85, 45)
+        DISPLAYSURF.blit(subtitle, subtitleRect) 
+
+        answerFont = pygame.font.Font('freesansbold.ttf', 20)
+        
+        answerT = answerFont.render("[  ] Nigeria   [  ] Artic   [  ] South Africa", True, WHITE)
+        answerTRect = answerT.get_rect()
+        answerTRect.topleft = (85, 65)
+        DISPLAYSURF.blit(answerT, answerTRect) 
+
+    
+    while True:
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                        terminate()               
+
+                    
+                
+        if answerA_pos_x < mouse[0] <  answerA_pos_x + answer_size_x and answerA_pos_y < mouse[1] < answerA_pos_y + answer_size_y:
+                DISPLAYSURF.blit(answer, (answerA_pos_x,answerA_pos_y))
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:                        
+                        ck = 0
+                        m += 1
+                        win()
+                        #correct_answer()
+                        return m             
+         
+        elif answerB_pos_x < mouse[0] <  answerB_pos_x + answer_size_x and answerB_pos_y < mouse[1] < answerB_pos_y + answer_size_y:
+                DISPLAYSURF.blit(answer, (answerB_pos_x,answerB_pos_y))
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:
+                        ck = 0
+                        incorrect_answer() 
+                        return m     
+        elif answerC_pos_x < mouse[0] <  answerC_pos_x + answer_size_x and answerC_pos_y < mouse[1] < answerC_pos_y + answer_size_y:
+                DISPLAYSURF.blit(answer, (answerC_pos_x,answerC_pos_y))
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:
+                        ck = 0
+                        incorrect_answer() 
+                        return m           
+        
+        else:
+            DISPLAYSURF.blit(answerb, (answerA_pos_x,answerA_pos_y))     
+            DISPLAYSURF.blit(answerb, (answerB_pos_x,answerB_pos_y))  
+            DISPLAYSURF.blit(answerb, (answerC_pos_x,answerC_pos_y))  
+        
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def correct_answer():
+    start_pos_x = 580
+    start_pos_y = 315
+    
+    start_size_x = 200
+    start_size_y = 65
+    while True:
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        DISPLAYSURF.blit(pygame.image.load("assets/correct.png"), (0,0))
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                        terminate()  
+                elif (event.key == K_RETURN):
+                    return 
+       
+        if start_pos_x < mouse[0] <  start_pos_x + start_size_x and start_pos_y < mouse[1] < start_pos_y + start_size_y:
+                if click[0] == 1:
+                    return
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)   
+
+def incorrect_answer():  
+    start_pos_x = 580
+    start_pos_y = 315
+    
+    start_size_x = 200
+    start_size_y = 65
+    while True:
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        DISPLAYSURF.blit(pygame.image.load("assets/incorrect.png"), (0,0))
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                        terminate()  
+                elif (event.key == K_RETURN):
+                    return 
+        
+        if start_pos_x < mouse[0] <  start_pos_x + start_size_x and start_pos_y < mouse[1] < start_pos_y + start_size_y:
+                if click[0] == 1:
+                    return
+        
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+def win():
+    while True:
+        DISPLAYSURF.blit(pygame.image.load("assets/win.png"), (0,0))
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                        terminate()  
+                elif (event.key == K_RETURN):
+                        terminate()  
+ 
+    
+        
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+
+def checkForKeyPress():
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            terminate()
+        elif event.type == KEYUP:
+            if event.key == K_ESCAPE:
+                terminate
+            else:
+                return True
+
+
+def location(id):
+    global ck
+    direction = 0
+    observatory_icon = "assets/observatory_icon.png"
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()                          
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    return      
+               
+        if direction == 0:                        
+            mouse = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+            
+            rotate1 = "assets/rotate1.png"
+            rotate2 = "assets/rotate2.png"
+            
+            rotate1_pos_x = 10
+            rotate1_pos_y = (WINDOWHEIGHT/2) - 30
+
+            rotate2_pos_x = WINDOWWIDTH - 50
+            rotate2_pos_y = (WINDOWHEIGHT/2) - 30
+        
+            rotate_size_x = 40
+            rotate_size_y = 40 
+            
+            
+            DISPLAYSURF.blit(pygame.image.load("assets/"+str(id)+"1.png"), (0,0))
+            
+            if id == "f":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("Nigeria", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            elif id == "p":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("Artic", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            elif id == "d":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("South Africa", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            
+            
+            if rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:
+                        direction = 3
+                        ck = 0
+            elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                if click[0] == 1: 
+                    ck += 1
+                    if ck > 1:
+                        direction = 1
+                        ck = 0
+            
+            if 0 < mouse[0] <  20 + 25 and 0 < mouse[1] < 20 + 25:
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:
+                        satellite()
+                        ck = 0
+        elif direction == 1:                        
+            mouse = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+            
+            see_pos_x = 740
+            see_pos_y = 0
+            
+            see_size_x = 100
+            see_size_y = 680
+            
+            
+            DISPLAYSURF.blit(pygame.image.load("assets/"+str(id)+"2.png"), (0,0))
+
+            
+            if id == "f":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("Nigeria", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            elif id == "p":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("Artic", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            elif id == "d":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("South Africa", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            
+            
+            if rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:
+                        direction = 0
+                        ck = 0
+            elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1: 
+                        direction = 2
+                        ck = 0
+            if 0 < mouse[0] <  20 + 25 and 0 < mouse[1] < 20 + 25:
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:
+                        satellite()
+                        ck = 0
+        
+        elif direction == 2:                        
+            mouse = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+            
+            see_pos_x = 740
+            see_pos_y = 0
+            
+            see_size_x = 100
+            see_size_y = 680
+            
+            
+            DISPLAYSURF.blit(pygame.image.load("assets/"+str(id)+"3.png"), (0,0))
+            
+            if id == "f":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("Nigeria", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            elif id == "p":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("Artic", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            elif id == "d":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("South Africa", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            
+            
+            if rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:
+                        direction = 1
+                        ck = 0
+            elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:
+                        direction = 3
+                        ck = 0
+            if 0 < mouse[0] <  20 + 25 and 0 < mouse[1] < 20 + 25:
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:
+                        satellite()
+                        ck = 0
+        
+        elif direction == 3:                        
+            mouse = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+            
+            see_pos_x = 740
+            see_pos_y = 0
+            
+            see_size_x = 100
+            see_size_y = 680
+            
+            
+            DISPLAYSURF.blit(pygame.image.load("assets/"+str(id)+"4.png"), (0,0))
+            
+            
+            if id == "f":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("Nigeria", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            elif id == "p":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("Artic", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            elif id == "d":
+                roomNameFont = pygame.font.Font('freesansbold.ttf', 30)
+                roomNameSurf = roomNameFont.render("South Africa", True, WHITE)
+                roomNameRect = roomNameSurf.get_rect()
+                roomNameRect.midtop = (WINDOWWIDTH / 2, 10)
+                DISPLAYSURF.blit(roomNameSurf, roomNameRect)  
+            
+            
+
+            if rotate1_pos_x < mouse[0] <  rotate1_pos_x + rotate_size_x and rotate1_pos_y < mouse[1] < rotate1_pos_y + rotate_size_y:
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:
+                        direction = 2
+                        ck = 0
+            elif rotate2_pos_x < mouse[0] <  rotate2_pos_x + rotate_size_x and rotate2_pos_y < mouse[1] < rotate2_pos_y + rotate_size_y:
+                if click[0] == 1: 
+                    ck += 1
+                    if ck > 1:
+                        direction = 0
+                        ck = 0
+
+            if 0 < mouse[0] <  20 + 25 and 0 < mouse[1] < 20 + 25:
+                if click[0] == 1:
+                    ck += 1
+                    if ck > 1:
+                        satellite()
+                        ck = 0
+        
+        DISPLAYSURF.blit(pygame.image.load(observatory_icon), (10,10)) 
+        
+        DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(rotate1), (rotate_size_x, rotate_size_y)), (rotate1_pos_x, rotate1_pos_y))  
+        DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load(rotate2), (rotate_size_x, rotate_size_y)), (rotate2_pos_x, rotate2_pos_y))  
+            
+        
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+    
+    
+def drawPressKeyMsg():
+    pressKeySurf = BASICFONT.render("Press any key to play...", True, DARKGRAY)
+    pressKeyRect = pressKeySurf.get_rect() 
+    pressKeyRect.bottomright = (WINDOWWIDTH - 10, WINDOWHEIGHT - 10)
+    DISPLAYSURF.blit(pressKeySurf, pressKeyRect)
+
+def terminate():
+    pygame.quit()
+    sys.exit()
+
+if __name__ == '__main__':
+    main()
